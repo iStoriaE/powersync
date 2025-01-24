@@ -47,12 +47,12 @@ class PostgresPersister
                         : 'DO NOTHING';
 
                     $query = "
-WITH data_row AS (
-    SELECT (json_populate_record(NULL::{$table}, ?::json)).*
-)
-INSERT INTO {$table} ({$columnsJoined})
-SELECT {$columnsJoined} FROM data_row
-ON CONFLICT(id) {$updateClause}";
+                        WITH data_row AS (
+                            SELECT (json_populate_record(NULL::{$table}, ?::json)).*
+                        )
+                        INSERT INTO {$table} ({$columnsJoined})
+                        SELECT {$columnsJoined} FROM data_row
+                        ON CONFLICT(id) {$updateClause}";
 
                     DB::connection('pgsql')->statement($query, [json_encode($withId)]);
                 } elseif (request()->method()  === 'PATCH') {
