@@ -16,7 +16,7 @@ class DataController extends Controller
     /**
      * Handle a batch of events.
      */
-    public function postBatch(Request $request): JsonResponse
+    public function post(Request $request): JsonResponse
     {
         $request->validate([
             'body' => 'required'
@@ -37,7 +37,7 @@ class DataController extends Controller
     /**
      * Handle all PUT events sent to the server by the client PowerSync application
      */
-    public function putBatch(Request $request): JsonResponse
+    public function put(Request $request): JsonResponse
     {
         $request->validate([
             'body' => 'required',
@@ -60,7 +60,7 @@ class DataController extends Controller
     /**
      * Handle checkpoint creation.
      */
-    public function putCheckpoint(Request $request): JsonResponse
+    public function checkpoint(Request $request): JsonResponse
     {
         $request->validate([
             'body' => 'required',
@@ -79,7 +79,7 @@ class DataController extends Controller
     /**
      * Handle all PATCH events sent to the server by the client PowerSync application
      */
-    public function patchBatch(Request $request): JsonResponse
+    public function patch(Request $request): JsonResponse
     {
         $request->validate([
             'body' => 'required'
@@ -100,7 +100,7 @@ class DataController extends Controller
     /**
      * Handle all DELETE events sent to the server by the client PowerSync application
      */
-    public function deleteBatch(Request $request): Application|Response|ResponseFactory
+    public function delete(Request $request): Application|Response|ResponseFactory
     {
         $request->validate([
             'body' => 'required',

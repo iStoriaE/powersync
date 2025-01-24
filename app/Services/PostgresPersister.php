@@ -18,17 +18,20 @@ class PostgresPersister
     /**
      * Processes a batch of operations (PUT, PATCH, DELETE).
      */
-    public function updateBatch(array $batch): void
+    public function updateBatch(array $sentData): void
     {
-        DB::transaction(function () use ($batch) {
 
-            foreach ($batch as $op) {
-                $table = $this->escapeIdentifier($op['table']);
+        DB::transaction(function () use ($sentData) {
 
-                if ($op['op'] === 'PUT') {
-                    $data = $op['data'];
+            foreach ($sentData as $key => $value) {
 
-                    $withId = array_merge($data, ['id' => $op['id'] ?? $data['id']]);
+                $table = $sentData['table'];
+
+                if (request()->method() === 'PUT') {
+
+                    $data = $sentData['data'];
+
+                    $withId = array_merge($data, ['id' => $data['id']]);
 
                     $columns = array_map([$this, 'escapeIdentifier'], array_keys($withId));
 
@@ -44,16 +47,17 @@ class PostgresPersister
                         : 'DO NOTHING';
 
                     $query = "
-                        WITH data_row AS (
-                            SELECT (json_populate_record(NULL::{$table}, ?::json)).*
-                        )
-                        INSERT INTO {$table} ({$columnsJoined})
-                        SELECT {$columnsJoined} FROM data_row
-                        ON CONFLICT(id) {$updateClause}";
+WITH data_row AS (
+    SELECT (json_populate_record(NULL::{$table}, ?::json)).*
+)
+INSERT INTO {$table} ({$columnsJoined})
+SELECT {$columnsJoined} FROM data_row
+ON CONFLICT(id) {$updateClause}";
 
                     DB::connection('pgsql')->statement($query, [json_encode($withId)]);
-                } elseif ($op['op'] === 'PATCH') {
-                    $data = $op['data'];
+                } elseif (request()->method()  === 'PATCH') {
+
+                    $data = $sentData['data'];
                     $withId = array_merge($data, ['id' => $op['id'] ?? $data['id']]);
 
                     $updateClauses = array_map(
@@ -71,7 +75,7 @@ class PostgresPersister
                         WHERE {$table}.id = data_row.id";
 
                     DB::connection('pgsql')->statement($query, [json_encode($withId)]);
-                } elseif ($op['op'] === 'DELETE') {
+                } elseif (request()->method()  === 'DELETE') {
                     $id = $op['id'] ?? $op['data']['id'];
                     $query = "
                         WITH data_row AS (
