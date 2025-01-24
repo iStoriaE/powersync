@@ -58,7 +58,7 @@ ON CONFLICT(id) {$updateClause}";
                 } elseif (request()->method()  === 'PATCH') {
 
                     $data = $sentData['data'];
-                    $withId = array_merge($data, ['id' => $op['id'] ?? $data['id']]);
+                    $withId = array_merge($data, ['id' => $data['id']]);
 
                     $updateClauses = array_map(
                         fn($key) => $this->escapeIdentifier($key) . " = data_row." . $this->escapeIdentifier($key),
