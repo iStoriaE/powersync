@@ -21,7 +21,7 @@ class AuthController extends Controller
             'iss' => config('app.url'),
             'aud' => config('powersync.url'),
             'iat' => time(),
-            'exp' => time() + 3600,
+            'exp' => time() + 36000,
         ];
 
         $headers = [
