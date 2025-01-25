@@ -22,6 +22,7 @@ class DataController extends Controller
             'body' => 'required'
         ]);
 
+        Log::info('post');
 
         try {
             PostgresPersister::make()->updateBatch($request->get('body'));
@@ -44,7 +45,7 @@ class DataController extends Controller
             'body.table' => 'required',
             'body.data' => 'required',
         ]);
-
+        Log::info('put');
         try {
             PostgresPersister::make()->updateBatch($request->get('body'));
 
@@ -67,7 +68,7 @@ class DataController extends Controller
             'user_id' => 'required',
             'client_id' => 'required',
         ]);
-
+        Log::info('checkpoint');
         $userId = $request->input('user_id', 'user_id');
         $clientId = $request->input('client_id', '1');
 
@@ -84,7 +85,7 @@ class DataController extends Controller
         $request->validate([
             'body' => 'required'
         ]);
-
+        Log::info('patch');
         try {
             PostgresPersister::make()->updateBatch($request->get('body'));
 
@@ -107,7 +108,7 @@ class DataController extends Controller
             'body.table' => 'required',
             'body.data' => 'required',
         ]);
-
+        Log::info('delete');
         try {
             PostgresPersister::make()->updateBatch($request->get('body'));
 
