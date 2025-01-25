@@ -6,6 +6,7 @@ use Firebase\JWT\JWT;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -32,6 +33,8 @@ class AuthController extends Controller
         // Encode headers in the JWT string
         $jwt = JWT::encode($payload, $privateKey, 'RS256', config('powersync.kid'), $headers);
 
+        Log::info('getToken');
+
         return response()->json([
             'powersync_url' => config('powersync.url'),
             'token' => $jwt,
@@ -47,6 +50,8 @@ class AuthController extends Controller
     {
         $publicKey = File::get(storage_path(config('powersync.public_key')));
         $keyDetails = openssl_pkey_get_details(openssl_pkey_get_public($publicKey));
+
+        Log::info('getKeys');
 
         return response()->json([
             'keys' => [
