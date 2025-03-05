@@ -15,7 +15,7 @@ class AuthController extends Controller
      */
     public function getToken(Request $request): JsonResponse
     {
-        $privateKey = File::get(storage_path(config('powersync.private_key')));
+        $privateKey = config('powersync.private_key');
 
         $payload = [
             'sub' => $request->query('user_id', ''),
@@ -48,7 +48,7 @@ class AuthController extends Controller
      */
     public function getKeys(): JsonResponse
     {
-        $publicKey = File::get(storage_path(config('powersync.public_key')));
+        $publicKey = config('powersync.public_key');
         $keyDetails = openssl_pkey_get_details(openssl_pkey_get_public($publicKey));
 
         Log::info('getKeys');
