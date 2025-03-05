@@ -15,7 +15,7 @@ class AuthController extends Controller
      */
     public function getToken(Request $request): JsonResponse
     {
-        $privateKey = config('powersync.private_key');
+        $privateKey = json_decode(base64_decode(config('powersync.private_key')));
 
         $payload = [
             'sub' => $request->query('user_id', ''),
@@ -48,8 +48,7 @@ class AuthController extends Controller
      */
     public function getKeys(): JsonResponse
     {
-        $publicKey = config('powersync.public_key');
-        $keyDetails = openssl_pkey_get_details(openssl_pkey_get_public($publicKey));
+        $publicKey = json_decode(base64_decode(config('powersync.public_key')));
 
         Log::info('getKeys');
 
@@ -59,9 +58,9 @@ class AuthController extends Controller
                     'kty' => 'RSA',
                     'alg' => 'RS256',
                     'use' => 'sig',
-                    'kid' => config('powersync.kid'),
-                    'n' => rtrim(str_replace(['+', '/'], ['-', '_'], base64_encode($keyDetails['rsa']['n'])), '='),
-                    'e' => rtrim(str_replace(['+', '/'], ['-', '_'], base64_encode($keyDetails['rsa']['e'])), '='),
+                    'kid' => $publicKey->kid,
+                    'n' => rtrim(str_replace(['+', '/'], ['-', '_'], base64_encode($publicKey->n)), '='),
+                    'e' => rtrim(str_replace(['+', '/'], ['-', '_'], base64_encode($publicKey->e)), '='),
                 ],
             ],
         ]);
