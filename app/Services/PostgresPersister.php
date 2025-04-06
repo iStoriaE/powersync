@@ -31,6 +31,10 @@ class PostgresPersister
 
                     $data = $sentData['data'];
 
+                    if (count($data) === 1 && isset($data['id'])) {
+                        continue;
+                    }
+
                     $withId = array_merge($data, ['id' => $data['id']]);
 
                     $columns = array_map([$this, 'escapeIdentifier'], array_keys($withId));
@@ -58,6 +62,11 @@ class PostgresPersister
                 } elseif (request()->method()  === 'PATCH') {
 
                     $data = $sentData['data'];
+                    
+                    if (count($data) === 1 && isset($data['id'])) {
+                        continue;
+                    }
+
                     $withId = array_merge($data, ['id' => $data['id']]);
 
                     $updateClauses = array_map(
