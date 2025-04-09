@@ -54,6 +54,10 @@ class PostgresPersister
                         SELECT {$columnsJoined} FROM data_row
                         ON CONFLICT(id) {$updateClause}";
 
+                    Log::info($data);
+                    Log::info($columns);
+                    Log::info($query);
+                    
                     DB::connection('pgsql')->statement($query, [json_encode($withId)]);
                 } elseif (request()->method()  === 'PATCH') {
 
@@ -73,6 +77,9 @@ class PostgresPersister
                         SET " . implode(', ', $updateClauses) . "
                         FROM data_row
                         WHERE {$table}.id = data_row.id";
+
+                    Log::info($data);
+                    Log::info($query);
 
                     DB::connection('pgsql')->statement($query, [json_encode($withId)]);
                 } elseif (request()->method()  === 'DELETE') {

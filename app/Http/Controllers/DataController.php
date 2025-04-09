@@ -27,6 +27,7 @@ class DataController extends Controller
         try {
             PostgresPersister::make()->updateBatch($request->get('body'));
 
+            Log::info(['message' => 'Batch completed']);
             return response()->json(['message' => 'Batch completed']);
         } catch (Exception $e) {
 
@@ -51,6 +52,7 @@ class DataController extends Controller
 
             $table = $request->get('body')['table'];
 
+            Log::info(['message' => "PATCH completed for $table"]);
             return response()->json(['message' => "PATCH completed for $table"]);
         } catch (\Exception $e) {
             Log::error('Request failed', ['error' => $e->getMessage()]);
